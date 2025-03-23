@@ -4,13 +4,14 @@ from langchain_core.messages import AIMessage
 import requests
 import json
 
-model_name = "gemma3:4b"
+#default values
+model_name = "deepseek-r1:1.5b"
 base_url = "http://localhost:11434"
 temp = 0.7
 top_k = 40
 top_p = 0.9
 
-
+# Get the list of models from Ollama
 def get_models() -> list:
     llmList = requests.get(base_url + "/api/tags")
     json_data = llmList.json()
@@ -20,7 +21,7 @@ def get_models() -> list:
     return results
 
 
-
+# define the sidebar
 models = get_models()
 model_name = st.sidebar.selectbox("Select a model from Ollama", models)
 temp = st.sidebar.slider("Temperature (Increase it to make model answer more creative)", 0.0, 1.0, 0.7)
@@ -64,6 +65,7 @@ with st.chat_message("assistant"):
             for m in st.session_state.messages
         ] 
         llm = ChatOllama(
+            base_url=base_url,
             model=model_name,
             temperature=temp,
             top_k=top_k,
@@ -75,18 +77,3 @@ with st.chat_message("assistant"):
     else:
         st.markdown(response)
         st.session_state.messages.append({"role": "assistant", "content": response})
-
-
-# prompt = st.chat("Enter your message")
-# if prompt:
-#     st.write(f"User has sent the following prompt: {prompt}")
-# messages = [
-#     ("system",
-#      "You are a helpful assistant"),
-#      ("human",
-#      prompt)
-# ]
-# if st.button("Send"):
-#     response = llm.invoke(messages)
-#     st.markdown(response.content)
-
