@@ -4,7 +4,7 @@ from langchain_core.messages import AIMessage
 import requests
 import json
 
-model_name = "gemma3:1b"
+model_name = "gemma3:4b"
 base_url = "http://localhost:11434"
 temp = 0.7
 top_k = 40
@@ -56,6 +56,7 @@ if prompt := st.chat_input("What's up!"):
 with st.chat_message("assistant"):
     print(f'prompt: {prompt}')
     print(f'messages: {st.session_state.messages}')
+    print(f'model: {model_name}, temp: {temp}, top_k: {top_k}, top_p: {top_p}')
     response = "Hi there! How can I help you today?"
     if prompt:
         messages = [
@@ -64,7 +65,6 @@ with st.chat_message("assistant"):
         ] 
         llm = ChatOllama(
             model=model_name,
-            base_url=base_url,
             temperature=temp,
             top_k=top_k,
             top_p=top_p
